@@ -25,7 +25,7 @@ class Robot
       raise NameFormatError, "There was a problem generating the robot name!"
     end
 
-    if @@registry.include?(name)
+    if @@registry.include? name
       raise NameCollisionError, "There was a problem generating the robot name!"
     end
   end
