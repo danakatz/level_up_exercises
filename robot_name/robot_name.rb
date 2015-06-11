@@ -9,9 +9,9 @@ class Robot
     @name_generator = args[:name_generator]
 
     if @name_generator
-      @name = @name_generator.call 
+      @name = @name_generator.call
     else
-      until (name && !@@registry.include?(name))
+      until name && !@@registry.include?(name)
         @name = NameGenerator.generate_name
       end
     end
@@ -21,7 +21,7 @@ class Robot
   end
 
   def validate_name
-    unless (name =~ /[[:alpha:]]{2}[[:digit:]]{3}/)
+    unless name =~ /[[:alpha:]]{2}[[:digit:]]{3}/
       raise NameFormatError, "There was a problem generating the robot name!"
     end
 
@@ -41,7 +41,7 @@ class NameGenerator
     2.times do
       chars << ('A'..'Z').to_a.sample
     end
-    return chars
+    chars
   end
 
   def self.generate_nums
@@ -49,7 +49,7 @@ class NameGenerator
     3.times do
       nums << rand(10).to_s
     end
-    return nums
+    nums
   end
 end
 

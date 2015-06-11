@@ -4,7 +4,7 @@ class Dinodex
   CSV_FILES = ['dinodex.csv', 'african_dinosaur_export.csv']
 
   def initialize(dinos = nil)
-    if dinos.nil? then dinos = CsvReader.get_dinos(CSV_FILES) end
+    dinos = CsvReader.get_dinos(CSV_FILES) if dinos.nil?
     @dino_list = dinos
   end
 
@@ -24,13 +24,13 @@ class Dinodex
 
   def big
     results = @dino_list
-    results.select! { |dino| if dino.weight then dino.weight > 4000 end }
+    results.select! { |dino| dino.weight ? dino.weight > 4000 : false }
     Dinodex.new(results)
   end
 
   def small
     results = @dino_list
-    results.select! { |dino| if dino.weight then dino.weight <= 4000 end }
+    results.select! { |dino| dino.weight ? dino.weight <= 4000 : false }
     Dinodex.new(results)
   end
 
@@ -43,6 +43,9 @@ class Dinodex
   end
 
   def print
-    @dino_list.each { |dino| dino.print }
+    @dino_list.each(&:print)
   end
 end
+
+dinodex = Dinodex.new
+dinodex.big.from_period("Cretaceous").print

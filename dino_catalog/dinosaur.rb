@@ -13,7 +13,7 @@ class Dinosaur
 
   def get(attribute)
     a = attribute.to_s.downcase
-    case 
+    case
     when a.include?("name")
       name
     when a.include?("period")
@@ -29,7 +29,7 @@ class Dinosaur
     when a.include?("desc")
       description
     else
-      raise ArgumentError, "Dinos don't have a '#{attribute}' attribute."
+      raise ArgumentError, "Dinos don't have the '#{attribute}' attribute."
     end
   end
 

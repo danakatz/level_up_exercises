@@ -6,7 +6,7 @@ class CsvReader
   def self.get_dinos(files_array)
     dinos = []
     files_array.each do |file_name|
-      CSV.foreach(file_name, :headers => :first_row) do |csv_dino|
+      CSV.foreach(file_name, headers: :first_row) do |csv_dino|
         dinos << make_dinosaur(csv_dino)
       end
     end
@@ -22,15 +22,15 @@ class CsvReader
     new_dino.weight = parse_weight(csv_dino)
     new_dino.walk = csv_dino['WALKING'] || csv_dino['Walking']
     new_dino.desc = csv_dino['DESCRIPTION']
-    
+
     new_dino
   end
 
   def self.parse_diet(csv_dino)
-    if csv_dino['DIET'] 
+    if csv_dino['DIET']
       csv_dino['DIET']
     elsif csv_dino['Carnivore'] == "Yes"
-      "Carnivore" 
+      "Carnivore"
     elsif csv_dino['Carnivore'] == "No"
       "Herbivore"
     end
