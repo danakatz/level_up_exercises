@@ -48,4 +48,4 @@ class Dinodex
 end
 
 dinodex = Dinodex.new
-dinodex.big.from_period("Cretaceous").print
+dinodex.big.from_period("Cretaceous").search(walk: "biped").print

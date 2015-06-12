@@ -21,7 +21,7 @@ class Arrowhead
     end
 
     unless CLASSIFICATIONS[region].include? shape
-      raise "Unknown shape value. Are you sure you know what you're talking about?"
+      raise "Unknown shape value. Are you sure that's what you're looking for?"
     end
   end
 

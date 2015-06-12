@@ -2,31 +2,35 @@ NameCollisionError = Class.new(RuntimeError)
 NameFormatError = Class.new(RuntimeError)
 
 class Robot
+  require 'set'
   attr_accessor :name
 
-  def initialize(args = {})
-    @@registry ||= []
-    @name_generator = args[:name_generator]
-
-    if @name_generator
-      @name = @name_generator.call
-    else
-      until name && !@@registry.include?(name)
-        @name = NameGenerator.generate_name
-      end
-    end
-
-    validate_name
-    @@registry << name
+  def self.registry
+    @registry ||= Set.new
   end
 
-  def validate_name
-    unless name =~ /[[:alpha:]]{2}[[:digit:]]{3}/
-      raise NameFormatError, "There was a problem generating the robot name!"
+  def self.add_to_registry(name)
+    unless @registry.add? name
+      raise NameCollisionError, "That name is already taken!"
     end
+  end
 
-    if @@registry.include? name
-      raise NameCollisionError, "There was a problem generating the robot name!"
+  def initialize(args = {})
+    @name_generator = args[:name_generator]
+    @name_generator ? @name = @name_generator.call : assign_random_name
+    validate_name_format
+    self.class.add_to_registry name
+  end
+
+  def assign_random_name
+    until name && !self.class.registry.include?(name)
+      @name = NameGenerator.generate_name
+    end
+  end
+
+  def validate_name_format
+    unless name =~ /[[:alpha:]]{2}[[:digit:]]{3}/
+      raise NameFormatError, "Invalid name format!"
     end
   end
 end
@@ -54,7 +58,7 @@ class NameGenerator
 end
 
 robot = Robot.new
-puts "My pet robot's name is #{robot.name}, but we usually call him sparky."
+puts "My pet robot's name is #{robot.name}, but we usually call him Sparky."
 
 # Format Error
 # generator = -> { 'B2' }

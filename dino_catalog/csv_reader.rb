@@ -1,7 +1,7 @@
 class CsvReader
   require 'csv'
   require 'json'
-  require_relative 'dinosaur.rb'
+  require_relative 'dinosaur'
 
   def self.get_dinos(files_array)
     dinos = []
@@ -15,15 +15,27 @@ class CsvReader
   end
 
   def self.make_dinosaur(csv_dino)
-    new_dino = Dinosaur.new(csv_dino['NAME'] || csv_dino['Genus'])
-    new_dino.period = csv_dino['PERIOD'] || csv_dino['Period']
-    new_dino.continent = csv_dino['CONTINENT'] || "Africa"
+    new_dino = Dinosaur.new(parse_name(csv_dino))
+    new_dino.period = parse_period(csv_dino)
+    new_dino.continent = parse_continent(csv_dino)
     new_dino.diet = parse_diet(csv_dino)
     new_dino.weight = parse_weight(csv_dino)
-    new_dino.walk = csv_dino['WALKING'] || csv_dino['Walking']
-    new_dino.desc = csv_dino['DESCRIPTION']
+    new_dino.walking = parse_walking(csv_dino)
+    new_dino.description = parse_desc(csv_dino)
 
     new_dino
+  end
+
+  def self.parse_name(csv_dino)
+    csv_dino['NAME'] || csv_dino['Genus']
+  end
+
+  def self.parse_period(csv_dino)
+    csv_dino['PERIOD'] || csv_dino['Period']
+  end
+
+  def self.parse_continent(csv_dino)
+    csv_dino['CONTINENT'] || "Africa"
   end
 
   def self.parse_diet(csv_dino)
@@ -42,5 +54,13 @@ class CsvReader
     elsif csv_dino['Weight']
       csv_dino['Weight'].to_i
     end
+  end
+
+  def self.parse_walking(csv_dino)
+    csv_dino['WALKING'] || csv_dino['Walking']
+  end
+
+  def self.parse_desc(csv_dino)
+    csv_dino['DESCRIPTION']
   end
 end

@@ -20,16 +20,25 @@ class Triangle
     !(equilateral? || isosceles?)
   end
 
+  def right?
+    angles.include? 90
+  end
+
+  def angles
+    calculate_angles(side1, side2, side3)
+  end
+
   def recite_facts
-    puts "This triangle is equilateral!" if equilateral?
-    puts "This triangle is isosceles!" if isosceles?
-    puts "This triangle is scalene and mathematically boring." if scalene?
-
-    angles = calculate_angles(side1, side2, side3)
+    puts type_info
     puts "The angles of this triangle are #{angles.join(', ')}."
-    puts "This triangle is also a right triangle!" if angles.include? 90
-
+    puts "This triangle is also a right triangle!" if right?
     puts ""
+  end
+
+  def type_info
+    return "This triangle is equilateral!" if equilateral?
+    return "This triangle is isosceles!" if isosceles?
+    return "This triangle is scalene and mathematically boring." if scalene?
   end
 
   def calculate_angles(a, b, c)
@@ -51,7 +60,7 @@ end
 
 triangles = [
   Triangle.new(5, 5, 5),
-  Triangle.new(5, 12, 13)
+  Triangle.new(5, 12, 13),
 ]
 
 triangles.each(&:recite_facts)
