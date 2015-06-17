@@ -1,6 +1,6 @@
 class Dinosaur
-  attr_accessor :name, :period, :continent, :diet
-  attr_accessor :weight, :walking, :description
+  attr_accessor :name, :period, :continent, :diet, 
+                :weight, :walking, :description
 
   def initialize(name)
     @name = name
@@ -20,7 +20,7 @@ class Dinosaur
 
   def print_var(v)
     var_value = instance_variable_get(v).to_s
-    var_value << " lbs" if v.to_s == "weight"
+    var_value << " lbs" if v.to_s == "@weight"
     var_key = v.to_s[1..-1].capitalize
     puts "#{var_key}: #{var_value}" unless var_value.empty?
   end

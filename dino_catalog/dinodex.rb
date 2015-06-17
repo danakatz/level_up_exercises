@@ -1,11 +1,12 @@
 class Dinodex
   require_relative 'csv_reader.rb'
   require_relative 'dinosaur.rb'
+  include CSVReader
 
   CSV_FILES = ['dinodex.csv', 'african_dinosaur_export.csv']
 
   def initialize(dinos = nil)
-    dinos = CsvReader.get_dinos(CSV_FILES) if dinos.nil?
+    dinos = get_dinos(CSV_FILES) if dinos.nil?
     @dino_list = dinos
   end
 
@@ -23,12 +24,12 @@ class Dinodex
   end
 
   def big
-    results = @dino_list.select { |d| d.weight ? d.weight > 4000 : false }
+    results = @dino_list.select { |dino| dino.weight ? dino.weight > 4000 : false }
     Dinodex.new(results)
   end
 
   def small
-    results = @dino_list.select { |d| d.weight ? d.weight <= 4000 : false }
+    results = @dino_list.select { |dino| dino.weight ? dino.weight <= 4000 : false }
     Dinodex.new(results)
   end
 
@@ -46,4 +47,4 @@ class Dinodex
 end
 
 dinodex = Dinodex.new
-dinodex.big.from_period("Cretaceous").search(walk: "biped", diet: "carnivore").print
+dinodex.big.from_period("Cretaceous").search(walk: "biped").print
