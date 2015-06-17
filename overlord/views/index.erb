@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+
+<h3>This bomb is <%= bomb.status %></h3>
+<img src="<%= bomb_img_url %>" height="100">
+<form action="/", method="post">
+  <%= input_label %><input type="number" name="code">
+  <input type="submit" value="GO">
+</form>
