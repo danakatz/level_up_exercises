@@ -9,7 +9,7 @@ get '/' do
   if session[:exploded]
     redirect to('/bang')
   elsif session[:configured]
-    erb :index
+    erb :index, :layout => true
   else
     redirect to('/configure')
   end
@@ -36,7 +36,11 @@ post '/' do
 end
 
 get '/configure' do
-  erb :configure
+  if sessions[:configured]
+    erb :index, :layout => true
+  else
+    erb :configure, :layout => true
+  end
 end
 
 post '/configure' do
@@ -47,7 +51,7 @@ post '/configure' do
 end
 
 get '/bang' do
-  erb :explosion
+  erb :explosion, :layout => true
 end
 
 helpers do

@@ -1,8 +1,9 @@
-<!DOCTYPE html>
-
-<h3>This bomb is <%= bomb.status %></h3>
-<img src="<%= bomb_img_url %>" height="100">
-<form action="/", method="post">
-  <%= input_label %><input type="number" name="code">
-  <input type="submit" value="GO">
+<h2>This bomb is <%= bomb.status %></h2>
+<form class="form-inline" action="/", method="post">
+  <div class="form-group">
+    <label for="code"><%= input_label %></label>
+    <input type="number" class="form-control" id="code" name="code">
+  </div>
+  <button type="submit" class="btn btn-danger">GO</button>
 </form>
+<img src="<%= bomb_img_url %>" height="100">
