@@ -7,4 +7,5 @@ gem "sinatra"
 
 group :test do
   gem 'cucumber-sinatra'
+  gem 'capybara'
 end

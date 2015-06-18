@@ -1,24 +1,32 @@
 Feature: The bomb can be configured with custom activation and deactivation codes.
 In order to customize the bomb
 A supervillain
-Can change the activation and deactivation codes.
+Can change the activation and deactivation codes on boot.
 
-  Scenario: Configure the activation code
-    Given a new bomb
-    When a user sets a new activation code
-    Then the bomb should have the new activation code
+  Scenario: User does not provide a custom activation code
+    Given the configure page is visible
+    When the user leaves the activation code blank
+      And the user inputs the default activation code
+    Then the status indicator should say "This bomb is ACTIVE"
 
-  Scenario: Set the activation code to nothing
-    Given a new bomb
-    When a user sets the activation code to nil
-    Then the bomb should keep its original activation code
+  Scenario: User does not provide a custom deactivation code
+    Given the configure page is visible
+    When the user leaves the deactivation code blank
+      And the user inputs the default deactivation code
+    Then the status indicator should say "This bomb is INACTIVE"
 
-  Scenario: Configure the deactivation code
-    Given a new bomb
-    When a user sets a new deactivation code
-    Then the bomb should have the new deactivation code
+  Scenario: User fills in a new activation code 
+    Given the configure page is visible
+    When the user submits a new activation code
+      And the user inputs the new activation code
+    Then the status indicator should say "This bomb is ACTIVE"
 
-  Scenario: Set the deactivation code to nothing
-    Given a new bomb
-    When a user sets the deactivation code to nil
-    Then the bomb should keep its original deactivation code
+  Scenario: User fills in a new deactivation code 
+    Given the configure page is visible
+    When the user submits a new deactivation code
+      And the user inputs the new deactivation code
+    Then the status indicator should say "This bomb is INACTIVE"
+
+
+    
+

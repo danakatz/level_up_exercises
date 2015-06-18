@@ -1,100 +1,149 @@
 require_relative "../../models/bomb.rb"
+require_relative "../../overlord.rb"
+require 'capybara/cucumber'
 
-Given (/^the bomb is (\w+)$/) do |status|
-  @bomb ||= Bomb.new
-  @bomb.active = true if status == 'active'
-  @bomb.active = false if status == 'inactive'
-  @start_active = @bomb.active
+Capybara.app = Overlord
+
+Given(/^the bomb has been configured with default activation codes$/) do
+  configure_default
 end
 
-Given(/^a new bomb$/) do
-  @bomb = Bomb.new
+When(/^the user inputs the default activation code$/) do
+  enter_default_activation
 end
 
-Then (/^the status indicator should say "This bomb is (\w+)"/) do |display|
-  expect(@bomb.status).to eq(display)
+When(/^the user inputs the default deactivation code$/) do
+  enter_default_deactivation
 end
 
-When (/^a user inputs the correct activation code$/) do
-  @bomb.input_code(@bomb.act_code)
+Then(/^the status indicator should say "([^"]*)"$/) do |status|
+  page.has_content?(status)
 end
 
-Then (/^the bomb should become active$/) do
-  expect(@start_active).to be false
-  expect(@bomb.active).to be true
+When(/^the user inputs an incorrect activation code$/) do
+  enter_incorrect_default_code
 end
 
-When (/^a user inputs an incorrect activation code$/) do
-  @bomb.input_code(wrong_code)
+When(/^the user inputs an incorrect deactivation code$/) do
+  enter_incorrect_default_code
 end
 
-When (/^a user inputs a code other than the deactivation code$/) do
-  @bomb.input_code(wrong_code)
+Given(/^the bomb is active$/) do
+  activate_bomb_default
 end
 
-Then (/^the bomb should do nothing$/) do
-  expect(@bomb.active).to equal(@start_active)
+When(/^the user inputs three consecutive incorrect deactivation codes$/) do
+  3.times { enter_incorrect_default_code }
 end
 
-When (/^a user inputs the correct deactivation code$/) do
-  @bomb.input_code(@bomb.deact_code)
+Then(/^the bomb should explode$/) do
+  page.has_xpath?("//img[contains(@src,'explosion-clipart-clipart-2118.svg')]")
 end
 
-Then (/^the bomb should become inactive$/) do
-  expect(@start_active).to be true
-  expect(@bomb.active).to be false
+When(/^the user visits the home page for the first time$/) do
+  visit('/')
 end
 
-When (/^a user inputs an incorrect deactivation code$/) do
-  @bomb.input_code(wrong_code)
+Then(/^they should see the configure page$/) do
+  page.has_content?('Configure Your Bomb')
 end
 
-When(/^a user sets a new (\w+) code$/) do |code_type|
-  @new_code = wrong_code
-  if code_type == "activation"
-    @bomb.set_activation_code @new_code
+Given(/^the bomb has been configured$/) do
+  configure_default
+end
+
+Then(/^the page should have a text field for entering a code$/) do
+  find_field('code').visible?
+end
+
+Then(/^there should be a text field for the (\w+) code$/) do |code_type|
+  if code_type == "actvation"
+    find_field('act_code').visible?
   elsif code_type == "deactivation"
-    @bomb.set_deactivation_code @new_code
+    find_field('deact_code').visible?
   end
 end
 
-Then(/^the bomb should have the new (\w+) code$/) do |code_type|
-  if code_type == "activation"
-    expect(@bomb.act_code).to eq(@new_code)
-  elsif code_type == "deactivation"
-    expect(@bomb.deact_code).to eq(@new_code)
-  end
+Given(/^the configure page is visible$/) do
+  visit('/')
 end
 
-When(/^a user sets the (\w+) code to nil$/) do |code_type|
-  if code_type == "activation"
-    @old_code = @bomb.act_code
-    @bomb.set_activation_code(nil)
-  elsif code_type == "deactivation"
-    @old_code = @bomb.deact_code
-    @bomb.set_deactivation_code(nil)
-  end
+When(/^the user leaves the activation code blank$/) do
+  submit_blank_activation
 end
 
-When(/^a user sets the (\w+) code to empty$/) do |code_type|
-  if code_type == "activation"
-    @old_code = @bomb.act_code
-    @bomb.set_activation_code("")
-  elsif code_type == "deactivation"
-    @old_code = @bomb.deact_code
-    @bomb.set_deactivation_code("")
-  end
+When(/^the user leaves the deactivation code blank$/) do
+  submit_blank_deactivation
 end
 
-Then(/^the bomb should keep its original (\w+) code$/) do |code_type|
-  if code_type == "activation"
-    expect(@bomb.act_code).to eq(@old_code)
-  elsif code_type = "deactivation"
-    expect(@bomb.deact_code).to eq(@old_code)
-  end
+When(/^the user submits a new activation code$/) do
+  submit_new_activation
 end
 
-def wrong_code
-  wrong_code = ((@bomb.act_code.to_i + @bomb.deact_code.to_i) / 2) + 2
-  wrong_code.to_s
+When(/^the user inputs the new activation code$/) do
+  enter_new_activation
 end
+
+When(/^the user submits a new deactivation code$/) do
+  submit_new_deactivation
+end
+
+When(/^the user inputs the new deactivation code$/) do
+  enter_new_deactivation
+end
+
+def configure_default
+  visit('/')
+  click_button('SAVE')
+end
+
+def enter_default_activation
+  fill_in('code', :with => '1234')
+  click_button('GO')
+end
+
+def enter_default_deactivation
+  fill_in('code', :with => '0000')
+  click_button('GO')
+end
+
+def enter_incorrect_default_code
+  fill_in('code', :with => '4321')
+  click_button('GO')
+end
+
+def activate_bomb_default
+  configure_default
+  enter_default_activation
+end
+
+def submit_blank_activation
+  fill_in('act_code', :with => '')
+  click_button('SAVE')
+end
+
+def submit_blank_deactivation
+  fill_in('deact_code', :with => '')
+  click_button('SAVE')
+end
+
+def submit_new_activation
+  fill_in('act_code', :with => '2222')
+  click_button('SAVE')
+end
+
+def enter_new_activation
+  fill_in('code', :with => '2222')
+  click_button('GO')
+end
+
+def submit_new_deactivation
+  fill_in('deact_code', :with => '3333')
+  click_button('SAVE')
+end
+
+def enter_new_deactivation
+  fill_in('code', :with => '3333')
+  click_button('GO')
+end
+

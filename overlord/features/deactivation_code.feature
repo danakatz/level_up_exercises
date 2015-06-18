@@ -5,13 +5,16 @@ Can input a deactivation code through the interface.
 
   Scenario: Deactivate the bomb
     Given the bomb is active
-    When a user inputs the correct deactivation code
-    Then the bomb should become inactive
-      And the status indicator should say "This bomb is INACTIVE"
+    When the user inputs the default deactivation code
+    Then the status indicator should say "This bomb is INACTIVE"
 
   Scenario: Input the wrong deactivation code
     Given the bomb is active
-    When a user inputs an incorrect deactivation code
-    Then the bomb should do nothing
-      And the status indicator should say "This bomb is ACTIVE"
+    When the user inputs an incorrect deactivation code
+    Then the status indicator should say "This bomb is ACTIVE"
+
+  Scenario: Three failed attempts to deactivate the bomb detonates the bomb
+    Given the bomb is active
+    When the user inputs three consecutive incorrect deactivation codes
+    Then the bomb should explode
       
